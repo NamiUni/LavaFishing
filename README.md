@@ -44,6 +44,10 @@ Bug reports, feature suggestions, and pull requests are welcome via [GitHub Issu
 2. Make changes or add new features on your branch.
 3. Submit a pull request for review.
 
+### Developer API
+Bukkit events here:
+[Developer Bukkit Events](https://github.com/NamiUni/LavaFishing/tree/master/src/main/java/com/github/namiuni/lavafishing/event)
+
 ## License
 This project is licensed under the GPL-3.0 License. For details, see the [LICENSE](./LICENCE.txt) file.
 
