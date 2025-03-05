@@ -137,7 +137,7 @@ public final class LavaHook {
         this.lureSpeed = fishingRod.getEnchantmentLevel(Enchantment.LURE) * 100;
 
         // Plugin Settings
-        final PrimaryConfig config = configLoader.primaryConfig();
+        final PrimaryConfig config = configLoader.primary();
         this.callBukkitEvent = config.callBukkitEvent();
 
         final Registry<Particle> particles = RegistryAccess.registryAccess().getRegistry(RegistryKey.PARTICLE_TYPE);

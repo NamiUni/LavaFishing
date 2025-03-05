@@ -19,6 +19,7 @@
  */
 package com.github.namiuni.lavafishing.config;
 
+import com.github.namiuni.lavafishing.exception.PluginConfigurationException;
 import net.kyori.adventure.serializer.configurate4.ConfigurateComponentSerializer;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
@@ -29,7 +30,6 @@ import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader;
 import org.spongepowered.configurate.loader.ConfigurationLoader;
 
-import java.io.UncheckedIOException;
 import java.nio.file.Path;
 
 @NullMarked
@@ -51,52 +51,49 @@ public final class ConfigLoader {
         this.dataDirectory = dataDirectory;
     }
 
-    public void reloadPrimaryConfig() {
-        this.logger.info("Reloading {}...", PRIMARY_CONFIG_FILE_NAME);
-
-        try {
-            this.primaryConfig = this.loadConfig();
-            this.logger.info("Successfully reloaded {}", PRIMARY_CONFIG_FILE_NAME);
-        } catch (final ConfigurateException exception) {
-            this.logger.error("Failed to reload {}, see above for further details", PRIMARY_CONFIG_FILE_NAME, exception);
-        }
+    public void loadConfiguration() throws PluginConfigurationException {
+        this.logger.info("Loading configurations...");
+        this.primaryConfig = this.loadConfiguration(PrimaryConfig.class, PRIMARY_CONFIG_FILE_NAME);
+        this.logger.info("Successfully loaded configurations: {}", PRIMARY_CONFIG_FILE_NAME);
     }
 
-    public PrimaryConfig primaryConfig() {
-        if (this.primaryConfig != null) {
-            return this.primaryConfig;
-        }
-
-        this.logger.info("Loading {}...", PRIMARY_CONFIG_FILE_NAME);
-        try {
-            this.primaryConfig = this.loadConfig();
-            return this.primaryConfig;
-        } catch (final ConfigurateException exception) {
-            throw new UncheckedIOException("Failed to initialize %s, see above for further details".formatted(PRIMARY_CONFIG_FILE_NAME), exception);
-        }
+    public PrimaryConfig primary() {
+        return this.primaryConfig;
     }
 
-    private ConfigurationLoader<CommentedConfigurationNode> createYamlLoader(final Path file) {
+    public ConfigurationLoader<CommentedConfigurationNode> configurationLoader(final Path file) {
         return HoconConfigurationLoader.builder()
                 .prettyPrinting(true)
-                .defaultOptions(options -> options
-                        .shouldCopyDefaults(true)
-                        .serializers(builder -> builder.registerAll(ConfigurateComponentSerializer.configurate().serializers())))
+                .defaultOptions(options -> {
+                    final var kyoriSerializer = ConfigurateComponentSerializer.configurate();
+                    return options
+                            .shouldCopyDefaults(true)
+                            .serializers(serializerBuilder -> serializerBuilder
+                                    .registerAll(kyoriSerializer.serializers()));
+                })
                 .path(file)
                 .build();
     }
 
-    private PrimaryConfig loadConfig() throws ConfigurateException {
-        final Path file = this.dataDirectory.resolve(ConfigLoader.PRIMARY_CONFIG_FILE_NAME);
-        final ConfigurationLoader<CommentedConfigurationNode> loader = this.createYamlLoader(file);
+    public <T> T loadConfiguration(final Class<T> clazz, final String fileName) throws PluginConfigurationException {
+        final Path file = this.dataDirectory.resolve(fileName);
+        final var loader = this.configurationLoader(file);
 
-        final CommentedConfigurationNode node = loader.load();
-        final PrimaryConfig config = node.get(PrimaryConfig.class);
-        if (config == null) {
-            throw new ConfigurateException(node, "Failed to deserialize " + PrimaryConfig.class.getName());
+        final CommentedConfigurationNode node;
+        final T config;
+        try {
+            node = loader.load();
+            config = node.get(clazz);
+            if (config == null) {
+                throw new ConfigurateException(node, "Failed to deserialize " + clazz.getName() + " from node");
+            }
+
+            node.set(clazz, config);
+            loader.save(node);
+        } catch (final ConfigurateException exception) {
+            throw new PluginConfigurationException("Failed to load configuration", exception);
         }
-        node.set(PrimaryConfig.class, config);
-        loader.save(node);
+
         return config;
     }
 }

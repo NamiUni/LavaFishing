@@ -20,6 +20,7 @@
 package com.github.namiuni.lavafishing;
 
 import com.github.namiuni.lavafishing.config.ConfigLoader;
+import com.github.namiuni.lavafishing.exception.PluginConfigurationException;
 import com.github.namiuni.lavafishing.util.LavaFishingPermissions;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.tree.LiteralCommandNode;
@@ -28,8 +29,9 @@ import io.papermc.paper.command.brigadier.Commands;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 import io.papermc.paper.plugin.bootstrap.PluginBootstrap;
 import io.papermc.paper.plugin.bootstrap.PluginProviderContext;
-import io.papermc.paper.plugin.lifecycle.event.registrar.ReloadableRegistrarEvent;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
+import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
+import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.jetbrains.annotations.ApiStatus;
@@ -43,10 +45,14 @@ public final class LavaFishingBootstrap implements PluginBootstrap {
     private @MonotonicNonNull ConfigLoader configLoader;
 
     @Override
-    public void bootstrap(final BootstrapContext bootstrapContext) {
-        this.configLoader = new ConfigLoader(bootstrapContext.getLogger(), bootstrapContext.getDataDirectory());
-        this.configLoader.primaryConfig(); // If not executed here, the configurations will be generated when fishing.
-        bootstrapContext.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, this::registerCommands);
+    public void bootstrap(final BootstrapContext context) {
+        this.configLoader = new ConfigLoader(context.getLogger(), context.getDataDirectory());
+        this.configLoader.loadConfiguration();
+
+        context.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, event -> {
+            final var command = this.createCommand(context.getLogger());
+            event.registrar().register(command);
+        });
     }
 
     @Override
@@ -54,18 +60,24 @@ public final class LavaFishingBootstrap implements PluginBootstrap {
         return new LavaFishing(this.configLoader);
     }
 
-    private void registerCommands(final ReloadableRegistrarEvent<Commands> event) {
-        final LiteralCommandNode<CommandSourceStack> command = Commands
+    private LiteralCommandNode<CommandSourceStack> createCommand(final ComponentLogger logger) {
+        return Commands
                 .literal("lavafishing")
                 .then(Commands
                         .literal("reload")
                         .requires(commandSourceStack -> commandSourceStack.getSender().hasPermission(LavaFishingPermissions.COMMAND_RELOAD))
                         .executes(commandContext -> {
-                            this.configLoader.reloadPrimaryConfig();
-                            commandContext.getSource().getSender().sendRichMessage("Config reload is complete!");
-                            return Command.SINGLE_SUCCESS;
+                            final CommandSender sender = commandContext.getSource().getSender();
+                            try {
+                                this.configLoader.loadConfiguration();
+                                sender.sendRichMessage("<#00B06B>Configuration successfully reloaded.</#00B06B>");
+                                return Command.SINGLE_SUCCESS;
+                            } catch (final PluginConfigurationException exception) {
+                                sender.sendRichMessage("<#FF4B00>Configuration failed to reload! See the console log for further details!!</#FF4B00>");
+                                logger.error("Failed to reload config", exception);
+                                return 0;
+                            }
                         }))
                 .build();
-        event.registrar().register(command);
     }
 }

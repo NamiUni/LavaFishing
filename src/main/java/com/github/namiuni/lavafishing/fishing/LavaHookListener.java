@@ -58,7 +58,7 @@ public final class LavaHookListener implements Listener {
         }
 
         // Check world
-        if (!this.configLoader.primaryConfig().allowWorlds().contains(event.getHook().getWorld().key())) {
+        if (!this.configLoader.primary().allowWorlds().contains(event.getHook().getWorld().key())) {
             return;
         }
 
