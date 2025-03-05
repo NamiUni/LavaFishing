@@ -14,9 +14,11 @@ import org.jspecify.annotations.NullMarked;
 public final class LavaFishing extends JavaPlugin {
 
     private final LavaHookHandler lavaHookHandler;
+    private final LavaHookListener lavaHookListener;
 
     LavaFishing(final ConfigLoader configLoader) {
         this.lavaHookHandler = new LavaHookHandler(this.getComponentLogger(), configLoader, this::runAtFixedRate);
+        this.lavaHookListener = new LavaHookListener(configLoader, this.lavaHookHandler);
     }
 
     @Override
@@ -26,7 +28,7 @@ public final class LavaFishing extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        this.getServer().getPluginManager().registerEvents(new LavaHookListener(lavaHookHandler), this);
+        this.getServer().getPluginManager().registerEvents(this.lavaHookListener, this);
     }
 
     @Override

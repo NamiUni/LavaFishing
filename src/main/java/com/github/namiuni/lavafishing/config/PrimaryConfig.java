@@ -1,10 +1,16 @@
 package com.github.namiuni.lavafishing.config;
 
+import io.papermc.paper.registry.keys.SoundEventKeys;
 import net.kyori.adventure.key.Key;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Particle;
+import org.bukkit.loot.LootTables;
 import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import org.spongepowered.configurate.objectmapping.meta.Comment;
+
+import java.util.Set;
 
 @NullMarked
 @ApiStatus.Internal
@@ -20,18 +26,28 @@ public final class PrimaryConfig {
             """)
     private boolean callBukkitEvent = false;
 
-    @Comment("Lava Hook Settings")
+    @Comment("Worlds that allow lava fishing.")
+    private Set<Key> allowWorlds = Set.of(
+            NamespacedKey.minecraft("overworld"),
+            NamespacedKey.minecraft("the_nether")
+    );
+
+    @Comment("Lava Hook Settings.")
     private LavaHookSettings lavaHookSettings = new LavaHookSettings(
-            Key.key("minecraft:smoke"),
-            Key.key("minecraft:dripping_lava"),
-            Key.key("minecraft:dripping_lava"),
-            Key.key("minecraft:item.bucket.fill_lava"),
-            Key.key("minecraft:entity.fishing_bobber.splash"),
-            Key.key("minecraft:gameplay/fishing")
+            Particle.SMOKE.key(),
+            Particle.DRIPPING_LAVA.key(),
+            Particle.DRIPPING_LAVA.key(),
+            SoundEventKeys.ITEM_BUCKET_FILL,
+            SoundEventKeys.ENTITY_FISHING_BOBBER_SPLASH,
+            LootTables.FISHING.key()
     );
 
     public boolean callBukkitEvent() {
         return this.callBukkitEvent;
+    }
+
+    public Set<Key> allowWorlds() {
+        return this.allowWorlds;
     }
 
     public LavaHookSettings lavaHookSettings() {
