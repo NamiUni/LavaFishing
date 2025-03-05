@@ -1,13 +1,18 @@
 import xyz.jpenilla.resourcefactory.bukkit.Permission.Default
 
+version = "1.0.0"
+
 plugins {
     id("java")
     id("com.gradleup.shadow") version "9.0.0-beta8"
     id("xyz.jpenilla.resource-factory-paper-convention") version "1.2.0"
     id("xyz.jpenilla.run-paper") version "2.3.1"
+    id("net.kyori.indra.licenser.spotless") version "3.1.3"
 }
 
-version = "1.0.0"
+java {
+    toolchain.languageVersion.set(JavaLanguageVersion.of(21))
+}
 
 repositories {
     mavenCentral()
@@ -23,15 +28,18 @@ dependencies {
     implementation("net.kyori:adventure-serializer-configurate4:4.19.0")
 }
 
-java {
-    toolchain.languageVersion.set(JavaLanguageVersion.of(21))
+indraSpotlessLicenser {
+    licenseHeaderFile(rootProject.file("LICENSE_HEADER"))
+    property("name", rootProject.name)
+    property("author", paperPluginYaml.author)
+    property("contributors", paperPluginYaml.contributors)
 }
 
 paperPluginYaml {
     main = "com.github.namiuni.lavafishing.LavaFishing"
     bootstrapper = "com.github.namiuni.lavafishing.LavaFishingBootstrap"
     version = rootProject.version.toString()
-    authors.add("NamiUni")
+    author = "NamiUni"
     apiVersion = "1.21"
 
     permissions {

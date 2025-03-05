@@ -49,7 +49,7 @@ Bukkit events here:
 [Developer Bukkit Events](https://github.com/NamiUni/LavaFishing/tree/master/src/main/java/com/github/namiuni/lavafishing/event)
 
 ## License
-This project is licensed under the GPL-3.0 License. For details, see the [LICENSE](./LICENCE.txt) file.
+This project is licensed under the GPL-3.0 License. For details, see the [LICENSE](./LICENCE) file.
 
 ## Author
 - **NamiUni** — [GitHub Profile](https://github.com/NamiUni)
