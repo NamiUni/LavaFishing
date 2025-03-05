@@ -25,17 +25,18 @@ Simply lava fishing. No extra features beyond that.
 - **Starting to Fish**
   Use a fishing rod on lava to activate the lava fishing feature.  
 
-## Configuration (config.yml)
-On first run, a `config.yml` file will be automatically generated, allowing you to customize:
+## Configuration
+On first run, a `config.conf` file will be automatically generated, allowing you to customize:
 - **Fishing Particles**: Modify the particles generated while lava fishing.
 - **Fishing Sounds**: Modify the sounds played during lava fishing.
 - **Loot Table**: Change the loot table for catch fish.
 
-*Refer to the comments in the generated `config.yml` for detailed configuration options.*
+*Refer to the comments in the generated `config.conf` for detailed configuration options.*
 
 ## Permissions
 Control access to the lava fishing feature with the following permission:
 - `lavafishing.command.reload` — Allows reloading the configuration via the reload command.
+- `lavafishing.play.fishing` - Allows lava fishing.
 
 ## Development and Contribution
 LavaFishing is an open-source project.  
