@@ -39,12 +39,20 @@ paperPluginYaml {
             description = "Reloads LavaFishing's config."
             default = Default.OP
         }
+
+        register("lavafishing.play.fishing") {
+            description = "Play lava fishing."
+            default = Default.TRUE
+        }
     }
 }
 
 tasks {
     runServer {
         minecraftVersion("1.21.4")
+        downloadPlugins {
+            url("https://download.luckperms.net/1573/bukkit/loader/LuckPerms-Bukkit-5.4.156.jar")
+        }
     }
 
     shadowJar {

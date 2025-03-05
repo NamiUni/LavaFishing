@@ -1,6 +1,7 @@
 package com.github.namiuni.lavafishing;
 
 import com.github.namiuni.lavafishing.config.ConfigLoader;
+import com.github.namiuni.lavafishing.util.LavaFishingPermissions;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
@@ -39,7 +40,7 @@ public final class LavaFishingBootstrap implements PluginBootstrap {
                 .literal("lavafishing")
                 .then(Commands
                         .literal("reload")
-                        .requires(commandSourceStack -> commandSourceStack.getSender().hasPermission("lavafishing.command.reload"))
+                        .requires(commandSourceStack -> commandSourceStack.getSender().hasPermission(LavaFishingPermissions.COMMAND_RELOAD))
                         .executes(commandContext -> {
                             this.configLoader.reloadPrimaryConfig();
                             commandContext.getSource().getSender().sendRichMessage("Config reload is complete!");

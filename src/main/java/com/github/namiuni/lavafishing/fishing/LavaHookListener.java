@@ -1,6 +1,7 @@
 package com.github.namiuni.lavafishing.fishing;
 
 import com.github.namiuni.lavafishing.config.ConfigLoader;
+import com.github.namiuni.lavafishing.util.LavaFishingPermissions;
 import com.github.namiuni.lavafishing.util.LavaFishingUtil;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.FishHook;
@@ -32,16 +33,24 @@ public final class LavaHookListener implements Listener {
 
     @EventHandler
     private void onFishing(final PlayerFishEvent event) {
-        if (this.configLoader.primaryConfig().allowWorlds().contains(event.getHook().getWorld().key())) {
-            switch (event.getState()) {
-                case FISHING -> this.lavaFishingHandler.cast(event.getHook());
-                case REEL_IN -> {
-                    if (this.lavaFishingHandler.wind(event.getPlayer(), Objects.requireNonNull(event.getHand()))) {
-                        event.setCancelled(true); // If a player fish event is called, it will be doubled, so cancel it.
-                    }
+        // Check permission
+        if (!event.getPlayer().hasPermission(LavaFishingPermissions.PLAY_LAVA_FISHING)) {
+            return;
+        }
+
+        // Check world
+        if (!this.configLoader.primaryConfig().allowWorlds().contains(event.getHook().getWorld().key())) {
+            return;
+        }
+
+        switch (event.getState()) {
+            case FISHING -> this.lavaFishingHandler.cast(event.getHook());
+            case REEL_IN -> {
+                if (this.lavaFishingHandler.wind(event.getPlayer(), Objects.requireNonNull(event.getHand()))) {
+                    event.setCancelled(true); // If a player fish event is called, it will be doubled, so cancel it.
                 }
-                // Events other than the above do not require listen.
             }
+            // Events other than the above do not require listen.
         }
     }
 
