@@ -11,6 +11,8 @@ I take performance very seriously, so if you encounter any performance issues, p
 ## Features
 Simply lava fishing. No extra features beyond that.
 
+![LavaFishing](https://github.com/user-attachments/assets/88986e28-accd-43b5-9caf-f57fb2aa2660)
+
 ## Supported Versions
 - **Paper**: 1.21.4
 
