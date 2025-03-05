@@ -19,7 +19,7 @@
  */
 package com.github.namiuni.lavafishing.config;
 
-import com.github.namiuni.lavafishing.exception.PluginConfigurationException;
+import com.github.namiuni.lavafishing.exception.LavaFishingConfigurationException;
 import net.kyori.adventure.serializer.configurate4.ConfigurateComponentSerializer;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
@@ -51,7 +51,7 @@ public final class ConfigLoader {
         this.dataDirectory = dataDirectory;
     }
 
-    public void loadConfiguration() throws PluginConfigurationException {
+    public void loadConfiguration() throws LavaFishingConfigurationException {
         this.logger.info("Loading configurations...");
         this.primaryConfig = this.loadConfiguration(PrimaryConfig.class, PRIMARY_CONFIG_FILE_NAME);
         this.logger.info("Successfully loaded configurations: {}", PRIMARY_CONFIG_FILE_NAME);
@@ -75,7 +75,7 @@ public final class ConfigLoader {
                 .build();
     }
 
-    public <T> T loadConfiguration(final Class<T> clazz, final String fileName) throws PluginConfigurationException {
+    public <T> T loadConfiguration(final Class<T> clazz, final String fileName) throws LavaFishingConfigurationException {
         final Path file = this.dataDirectory.resolve(fileName);
         final var loader = this.configurationLoader(file);
 
@@ -91,7 +91,7 @@ public final class ConfigLoader {
             node.set(clazz, config);
             loader.save(node);
         } catch (final ConfigurateException exception) {
-            throw new PluginConfigurationException("Failed to load configuration", exception);
+            throw new LavaFishingConfigurationException("Failed to load configuration", exception);
         }
 
         return config;

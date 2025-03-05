@@ -20,28 +20,26 @@
 package com.github.namiuni.lavafishing.exception;
 
 import org.jspecify.annotations.NullMarked;
-import org.spongepowered.configurate.ConfigurateException;
 
 @NullMarked
-@SuppressWarnings("unused")
-public final class PluginConfigurationException extends PluginException {
-    public PluginConfigurationException() {
+public abstract class LavaFishingException extends RuntimeException {
+    public LavaFishingException() {
         super();
     }
 
-    public PluginConfigurationException(final String message) {
+    public LavaFishingException(final String message) {
         super(message);
     }
 
-    public PluginConfigurationException(final ConfigurateException cause) {
+    public LavaFishingException(final Throwable cause) {
         super(cause);
     }
 
-    public PluginConfigurationException(final String message, final ConfigurateException cause) {
+    public LavaFishingException(final String message, final Throwable cause) {
         super(message, cause);
     }
 
-    public PluginConfigurationException(final String message, final ConfigurateException cause, final boolean enableSuppression, final boolean writableStackTrace) {
+    public LavaFishingException(final String message, final Throwable cause, final boolean enableSuppression, final boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }
 }

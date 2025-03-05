@@ -20,7 +20,7 @@
 package com.github.namiuni.lavafishing;
 
 import com.github.namiuni.lavafishing.config.ConfigLoader;
-import com.github.namiuni.lavafishing.exception.PluginConfigurationException;
+import com.github.namiuni.lavafishing.exception.LavaFishingConfigurationException;
 import com.github.namiuni.lavafishing.util.LavaFishingPermissions;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.tree.LiteralCommandNode;
@@ -72,7 +72,7 @@ public final class LavaFishingBootstrap implements PluginBootstrap {
                                 this.configLoader.loadConfiguration();
                                 sender.sendRichMessage("<#00B06B>Configuration successfully reloaded.</#00B06B>");
                                 return Command.SINGLE_SUCCESS;
-                            } catch (final PluginConfigurationException exception) {
+                            } catch (final LavaFishingConfigurationException exception) {
                                 sender.sendRichMessage("<#FF4B00>Configuration failed to reload! See the console log for further details!!</#FF4B00>");
                                 logger.error("Failed to reload config", exception);
                                 return 0;
