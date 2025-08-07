@@ -25,7 +25,7 @@ repositories {
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.21.4-R0.1-SNAPSHOT")
     implementation("org.spongepowered:configurate-hocon:4.2.0")
-    implementation("net.kyori:adventure-serializer-configurate4:4.23.0")
+    implementation("net.kyori:adventure-serializer-configurate4:4.24.0")
 }
 
 indraSpotlessLicenser {
