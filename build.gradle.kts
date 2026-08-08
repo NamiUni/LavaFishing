@@ -6,7 +6,7 @@ plugins {
     id("java")
     id("com.gradleup.shadow") version "9.0.0-rc2"
     id("xyz.jpenilla.resource-factory-paper-convention") version "1.3.0"
-    id("xyz.jpenilla.run-paper") version "2.3.1"
+    id("xyz.jpenilla.run-paper") version "3.1.0"
     id("net.kyori.indra.licenser.spotless") version "3.1.3"
 }
 
